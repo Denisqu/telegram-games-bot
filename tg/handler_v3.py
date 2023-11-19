@@ -65,12 +65,12 @@ def next_message_reply(message, session=None):
 
     # check for player win
     if session.wins(session.game_state, session.HUMAN):
-        bot.send_message(message.chat.id, f"Вы победили! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=session.restart_keyboard)
+        bot.send_message(message.chat.id, f"Вы победили! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=restart_keyboard)
         bot.register_next_step_handler(message, start, session)
         return
     # check for draw
     if len(session.empty_cells()) == 0:
-        bot.send_message(message.chat.id, f"Ничья! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=session.restart_keyboard)
+        bot.send_message(message.chat.id, f"Ничья! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=restart_keyboard)
         bot.register_next_step_handler(message, start, session)
         return
     
@@ -95,7 +95,7 @@ def next_message_reply(message, session=None):
     
     # check for draw
     if len(session.empty_cells()) == 0:
-        bot.send_message(message.chat.id, f"Ничья! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=session.restart_keyboard)
+        bot.send_message(message.chat.id, f"Ничья! Ваш анекдот: \n {get_good_anecdote(session)}", reply_markup=restart_keyboard)
         bot.register_next_step_handler(message, start, session)
         return
     
@@ -111,7 +111,7 @@ def parse_step_input(text):
         return (user_coords[0], user_coords[1])
     
 def get_good_anecdote(session):
-    return """Идут два арабских террориста-камикадзе на задание. anekdotov.net, Один — другому: \n
+    return """Идут два арабских террориста-камикадзе на задание. Один — другому: \n
 — Волнуешься? \n
 Второй: \n
 — А то? Первый раз все-таки!"""
