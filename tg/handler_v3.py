@@ -3,14 +3,27 @@ import re
 from telebot import types
 import random
 from core.game import GameSession
+import json
+import yaml
+import random
 
 begin_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 begin_keyboard.row('Начать игру за X', 'Начать игру за O')
 
 restart_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-restart_keyboard.row('ГГ, ГО НЕКСТ')
+restart_keyboard.row('Замечательная партия! Продолжим игру.')
 
-bot = telebot.TeleBot("6596300742:AAEq0AK0_M94haOze6ogNxx57QzM2q_qqLw")
+bot = telebot.TeleBot("6596300742:AAFr7Z_5NTjhFGmfGtroSOalAXt1Z-c6D1g")
+
+good_jokes_json = None
+bad_jokes_json = None
+with open('./resources/goodjokes.json', encoding="utf8") as f:
+    #good_jokes_json = yaml.safe_load(f)
+    good_jokes_json = json.load(f)
+with open('./resources/badjokes.json', encoding="utf8") as f:
+    #bad_jokes_json = yaml.safe_load(f)
+    bad_jokes_json = json.load(f)
+
 
 @bot.message_handler(commands=['start'])
 def start(message, session=None):
@@ -26,6 +39,8 @@ def start(message, session=None):
     session.field_repr = [['(0,0)', '(0,1)', '(0,2)'],
              ['(1,0)', '(1,1)', '(1,2)'],
              ['(2,0)', '(2,1)', '(2,2)']]
+    session.seen_good_jokes_ids_list = []
+    session.seen_bad_jokes_ids_list = []
     bot.register_next_step_handler(message, start_game_message_reply, session)
 
 def start_game_message_reply(message, session=None):
@@ -111,15 +126,32 @@ def parse_step_input(text):
         return (user_coords[0], user_coords[1])
     
 def get_good_anecdote(session):
-    return """Идут два арабских террориста-камикадзе на задание. Один — другому: \n
-— Волнуешься? \n
-Второй: \n
-— А то? Первый раз все-таки!"""
+    if len(session.seen_good_jokes_ids_list) >= len(good_jokes_json):
+        session.seen_good_jokes_ids_list = []
+    i, anecdote = 0, None
+    while True:
+        i += 1
+        anecdote = good_jokes_json[random.randrange(0, len(good_jokes_json))]
+        if anecdote["id"] not in session.seen_good_jokes_ids_list:
+            session.seen_good_jokes_ids_list.append(anecdote["id"])
+            return anecdote["joke"]
+        if i >= 10:
+            return anecdote["joke"]
+
+    
 
 def get_bad_anecdote(session):
-    return """Что утром на двух ногах, днем на четырех, а вечером вновь на двух? \n
-Рядовой Табуретка
-"""
+    if len(session.seen_good_jokes_ids_list) >= len(bad_jokes_json):
+        session.seen_bad_jokes_ids_list = []
+    i, anecdote = 0, None
+    while True:
+        i += 1
+        anecdote = bad_jokes_json[random.randrange(0, len(bad_jokes_json))]
+        if anecdote["id"] not in session.seen_bad_jokes_ids_list:
+            session.seen_bad_jokes_ids_list.append(anecdote["id"])
+            return anecdote["joke"]
+        if i >= 10:
+            return anecdote["joke"]
     
 if __name__ == '__main__':
     bot.polling(none_stop=True)
