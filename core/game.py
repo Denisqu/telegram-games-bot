@@ -114,6 +114,9 @@ class GameSession:
         :param y: координата Y
         :return: True, если board[x][y] пуста
         '''
+        if x is None or y is None:
+            return False
+
         if [x, y] in self.empty_cells():
             return True
         else:

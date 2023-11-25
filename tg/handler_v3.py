@@ -67,9 +67,9 @@ def start_game_message_reply(message, session=None):
 
 def next_message_reply(message, session=None):
     # player logical move
-    row, column = parse_step_input(message.text)
+    is_valid_parsed, row, column = parse_step_input(message.text)
     is_valid_move = session.user_step((row, column))
-    if not is_valid_move:
+    if not (is_valid_move or is_valid_parsed):
         bot.send_message(message.chat.id, "Неправильный ход, попробуй ещё раз", reply_markup=session.begin_field_keyboard)
         bot.register_next_step_handler(message, next_message_reply, session)
         return
@@ -123,7 +123,8 @@ def parse_step_input(text):
         user_coords = text.split(',')
         user_coords[0] = int(user_coords[0].replace('(', ''))
         user_coords[1] = int(user_coords[1].replace(')', ''))
-        return (user_coords[0], user_coords[1])
+        return (True, user_coords[0], user_coords[1])
+    return False, None, None
     
 def get_good_anecdote(session):
     if len(session.seen_good_jokes_ids_list) >= len(good_jokes_json):
