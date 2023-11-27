@@ -13,7 +13,7 @@ begin_keyboard.row('Начать игру за X', 'Начать игру за O
 restart_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 restart_keyboard.row('Замечательная партия! Продолжим игру.')
 
-bot = telebot.TeleBot("6596300742:AAFr7Z_5NTjhFGmfGtroSOalAXt1Z-c6D1g")
+bot = telebot.TeleBot("6596300742:AAHZkLqBwk3qWdqzkBS5UJiUunogzRLcmnI")
 
 good_jokes_json = None
 bad_jokes_json = None
@@ -55,7 +55,9 @@ def start_game_message_reply(message, session=None):
             session.AI_figure = 'X'
             reply_text = 'Играем за O. \nВыберете нужную позицию для вашего хода'
         case _:
-            print(f'Wrong message in start_game_message_reply: message = {message.text}')
+            session.user_figure = 'X'
+            session.AI_figure = 'O'
+            reply_text = 'Играем за X. \nВыберете нужную позицию для вашего хода'
     
     begin_field_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=False)
     session.begin_field_keyboard = begin_field_keyboard
