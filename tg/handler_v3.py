@@ -13,7 +13,7 @@ begin_keyboard.row('Начать игру за X', 'Начать игру за O
 restart_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 restart_keyboard.row('Замечательная партия! Продолжим игру.')
 
-bot = telebot.TeleBot("6596300742:AAHZkLqBwk3qWdqzkBS5UJiUunogzRLcmnI")
+bot = telebot.TeleBot("6596300742:AAERODLBO1lL9V1TFyQUYZXQooKuZylP3D8")
 
 good_jokes_json = None
 bad_jokes_json = None
@@ -24,6 +24,9 @@ with open('./resources/badjokes.json', encoding="utf8") as f:
     #bad_jokes_json = yaml.safe_load(f)
     bad_jokes_json = json.load(f)
 
+
+for goodjoke in good_jokes_json:
+    print(goodjoke)
 
 @bot.message_handler(commands=['start'])
 def start(message, session=None):
